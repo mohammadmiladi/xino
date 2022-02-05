@@ -1,12 +1,12 @@
 <template>
   <div @click="goToMohammadSite()" class="footer-style">
-    Copyright 2021 Mohammad Miladi
+    Copyright 2022 Mohammad Miladi
   </div>
 </template>
 
 <script>
 export default {
-  name: "footer",
+  name: "footer-page",
   methods: {
     goToMohammadSite() {
       window.open("https://mohammadmiladi.ir", "_blank");

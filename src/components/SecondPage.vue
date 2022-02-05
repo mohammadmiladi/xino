@@ -3,18 +3,20 @@
     <div class="main-container">
       <div class="question">{{ questionsData[currentQuestion].question }}</div>
       <div class="timer">
-          
+        {{ timerCount }}
+        <div id="progressBar">
+          <div :style="`width: ${widthPercentage}%`" class="bar"></div>
+          <div class="label"></div>
+        </div>
       </div>
       <div
-        v-for="(answers, idx) in shuffle(
-          questionsData[currentQuestion].answers
-        )"
+        v-for="(answerss, idx) in answers"
         :key="idx"
+        @click="selectAnswer(idx)"
         class="answers"
       >
-        {{ answers }}
+        {{ answerss }}
       </div>
-      <div class="show-answer"></div>
     </div>
   </div>
 </template>
@@ -27,11 +29,26 @@ export default {
   data() {
     return {
       questionsData: [],
+      answers: [],
       currentQuestion: 0,
+      timerCount: 0,
+      widthPercentage: 0,
     };
   },
   created() {
     this.questionsData = Questions;
+    this.answers = this.shuffle(
+      this.questionsData[this.currentQuestion].answers
+    );
+    this.timerCount = 5;
+    this.countDown();
+  },
+  watch: {
+    currentQuestion() {
+      this.answers = this.shuffle(
+        this.questionsData[this.currentQuestion].answers
+      );
+    },
   },
   methods: {
     shuffle(array) {
@@ -45,8 +62,20 @@ export default {
           array[currentIndex],
         ];
       }
-
       return array;
+    },
+    countDown() {
+      setInterval(() => {
+        if (this.timerCount > 0) {
+          this.timerCount--;
+          this.widthPercentage += 20;
+        } else {
+          this.widthPercentage = 0;
+          this.currentQuestion++;
+          this.timerCount = 5;
+          this.greenOrRed = "";
+        }
+      }, 1000);
     },
   },
 };
@@ -96,5 +125,60 @@ export default {
   background: rgb(204, 219, 241);
   color: rgb(19, 15, 15);
   cursor: pointer;
+}
+.timer {
+  padding: 20px;
+  background: rgb(224, 236, 255);
+  box-shadow: 0 0 5px rgb(128, 128, 128);
+  width: 100px;
+  display: flex;
+  font-weight: 700;
+  flex-direction: column;
+  margin: 20px 0;
+  justify-content: center;
+  align-items: center;
+}
+#progressBar {
+  width: 100%;
+  margin: 10px auto;
+  height: 20px;
+  background-color: #0a5f44;
+  position: relative;
+}
+
+#progressBar .bar {
+  height: 100%;
+  text-align: right;
+  padding: 0;
+  line-height: 20px;
+  width: 0;
+  background-color: #cbea00;
+  box-sizing: border-box;
+  position: relative;
+}
+
+#progressBar .label {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%);
+  color: #fff;
+  font-size: 16px;
+  height: 20px;
+  display: inline-block;
+  line-height: 20px;
+}
+.show-answer {
+  margin-top: 10px;
+  padding: 20px;
+  border-radius: 7px;
+}
+.green-answer {
+  background: rgb(181, 255, 181);
+  color: green;
+}
+.red-answer {
+  background: rgb(255, 223, 223);
+  color: red;
 }
 </style>
