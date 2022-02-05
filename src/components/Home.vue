@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div id="app">
     <div v-if="pageNumber == 1">
-      <FirstPage />
+      <FirstPage @changePage="changePage(2)" />
     </div>
     <div v-if="pageNumber == 2">
       <SecondPage />
@@ -28,6 +28,11 @@ export default {
     return {
       pageNumber: 1,
     };
+  },
+  methods: {
+    changePage(payload) {
+      this.pageNumber = payload;
+    },
   },
 };
 </script>
