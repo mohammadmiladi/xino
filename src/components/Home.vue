@@ -4,10 +4,10 @@
       <FirstPage @changePage="changePage(2)" />
     </div>
     <div v-if="pageNumber == 2">
-      <SecondPage />
+      <SecondPage @changePage="changePage(3)" />
     </div>
     <div v-if="pageNumber == 3">
-      <ThirdPage />
+      <ThirdPage @changePage="changePage(1)" />
     </div>
   </div>
 </template>

@@ -12,10 +12,18 @@
       <div
         v-for="(answerss, idx) in answers"
         :key="idx"
-        @click="selectAnswer(idx)"
+        @click="selectAnswer(answerss, idx)"
         class="answers"
       >
-        {{ answerss }}
+        {{ answerss.value }}
+      </div>
+      <div class="circles">
+        <div
+          :style="`background-color: ${circleColor[inx]}`"
+          class="circle"
+          v-for="(item, inx) in questionsData"
+          :key="inx"
+        ></div>
       </div>
     </div>
   </div>
@@ -33,6 +41,7 @@ export default {
       currentQuestion: 0,
       timerCount: 0,
       widthPercentage: 0,
+      circleColor: [],
     };
   },
   created() {
@@ -40,7 +49,7 @@ export default {
     this.answers = this.shuffle(
       this.questionsData[this.currentQuestion].answers
     );
-    this.timerCount = 5;
+    this.timerCount = 10;
     this.countDown();
   },
   watch: {
@@ -68,14 +77,24 @@ export default {
       setInterval(() => {
         if (this.timerCount > 0) {
           this.timerCount--;
-          this.widthPercentage += 20;
+          this.widthPercentage += 10;
         } else {
-          this.widthPercentage = 0;
-          this.currentQuestion++;
-          this.timerCount = 5;
-          this.greenOrRed = "";
+          if (this.questionsData.length == this.currentQuestion + 1) {
+            this.$emit("changePage");
+          } else {
+            this.widthPercentage = 0;
+            this.currentQuestion++;
+            this.timerCount = 10;
+          }
         }
       }, 1000);
+    },
+    selectAnswer(payload) {
+      if (payload.answer) {
+        this.circleColor[this.currentQuestion] = "green";
+      } else {
+        this.circleColor[this.currentQuestion] = "red";
+      }
     },
   },
 };
@@ -86,6 +105,18 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.circles {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.circle {
+  border-radius: 50%;
+  border: 1px solid gray;
+  margin: 10px;
+  width: 40px;
+  height: 40px;
 }
 .main-container {
   width: 70%;
